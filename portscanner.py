@@ -72,16 +72,17 @@ def synScan(args):
     table.add_column("Status")
     table.add_column("Service")
     closedPorts = 0
+    
+    scanner = Scanner(args.ip, args.port)
+    ping = scanner.ping()
+    if not ping:
+            rprint(f"[bold red]Host {args.ip} seems to be down, try again later![/bold red]")
+            exit()
+
     while not portQueue.isEmpty():
         port = portQueue.dequeue()
         scanner = Scanner(args.ip, port)
-        ping = scanner.ping()
-
-        if not ping:
-            rprint(f"[bold red]Host {args.ip} seems to be down, try again later![/bold red]")
-            exit()
-    
-    
+        
         try:
             response = scanner.syn()
         
