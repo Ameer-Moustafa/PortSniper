@@ -80,6 +80,7 @@ def synScan(args):
     table.add_column("Status")
     table.add_column("Service")
     closedPorts = 0
+    noOpenPorts = True
     
     discoverHosts(args)
     
@@ -95,15 +96,21 @@ def synScan(args):
             responeFlag = responeFlag.split(" ")
         except:
             table.add_row(f"{port}/TCP", "filtered", "Unknown")
+            noOpenPorts = False
         if responeFlag[1] == 'SA':
             table.add_row(f"{port}/TCP", "open", f"{responeFlag[0]}")
+            noOpenPorts = False
             
         elif responeFlag[1] == 'RA':
             closedPorts += 1
             
 
     rprint(f"Closed Ports: {closedPorts}\n")
-    rprint(table)
+
+    if noOpenPorts:
+        return rprint("[bold red] All scanned ports are closed, nothing to display![/bold red]")
+    else:
+        rprint(table)
     
 
 
