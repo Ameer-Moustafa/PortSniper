@@ -63,6 +63,14 @@ def QueuePorts():
             portQueue.enqueue(int(split_args[port]))
     return portQueue
 
+def discoverHosts(args):
+    scanner = Scanner(args.ip, args.port)
+    ping = scanner.ping()
+    if not ping:
+        rprint(f"[bold red]Host {args.ip} seems to be down, try again later![/bold red]")
+        exit()
+
+
 
 
 def synScan(args):
@@ -73,16 +81,13 @@ def synScan(args):
     table.add_column("Service")
     closedPorts = 0
     
-    scanner = Scanner(args.ip, args.port)
-    ping = scanner.ping()
-    if not ping:
-            rprint(f"[bold red]Host {args.ip} seems to be down, try again later![/bold red]")
-            exit()
+    discoverHosts(args)
+    
 
     while not portQueue.isEmpty():
         port = portQueue.dequeue()
         scanner = Scanner(args.ip, port)
-        
+
         try:
             response = scanner.syn()
         
