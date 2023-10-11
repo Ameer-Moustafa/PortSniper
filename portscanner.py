@@ -88,12 +88,14 @@ def synScan(args):
             responeFlag = response.sprintf("%TCP.sport% %TCP.flags%")
             responeFlag = responeFlag.split(" ")
         except:
-            return rprint("[red bold] An error has occured, exiting...[/red bold]")
+            table.add_row(f"{port}/TCP", "filtered", "Unknown")
         if responeFlag[1] == 'SA':
             table.add_row(f"{port}/TCP", "open", f"{responeFlag[0]}")
             
         elif responeFlag[1] == 'RA':
             closedPorts += 1
+            
+
     rprint(f"Closed Ports: {closedPorts}\n")
     rprint(table)
     
@@ -137,7 +139,7 @@ main()
 # Target overview in display(), IP, ports to scan, mac address?, etc (in progress)
 # Different scans with scapey
 
-# Read https://nmap.org/book/toc.html - Host Discovery, Port scanning overview
+# Read https://nmap.org/book/toc.html - Host Discovery, Port scanning overview. How nmap handles open, closed, filtered states
 
 # Delay argument for port scans, can add a flag like nmap with default value
 
