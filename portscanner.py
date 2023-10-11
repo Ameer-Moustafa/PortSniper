@@ -78,7 +78,7 @@ def synScan(args):
         ping = scanner.ping()
 
         if not ping:
-            rprint(f"[bold red]Host {ip} seems to be down, try again later![/bold red]")
+            rprint(f"[bold red]Host {args.ip} seems to be down, try again later![/bold red]")
             exit()
     
     
