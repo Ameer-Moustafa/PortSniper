@@ -88,20 +88,17 @@ def synScan(args):
     while not portQueue.isEmpty():
         port = portQueue.dequeue()
         scanner = Scanner(args.ip, port)
-
-        try:
-            response = scanner.syn()
         
-            responeFlag = response.sprintf("%TCP.sport% %TCP.flags%")
-            responeFlag = responeFlag.split(" ")
-        except:
+        response = scanner.syn()
+        
+        if not response:
             table.add_row(f"{port}/TCP", "filtered", "Unknown")
             noOpenPorts = False
-        if responeFlag[1] == 'SA':
-            table.add_row(f"{port}/TCP", "open", f"{responeFlag[0]}")
+        elif response[1] == 'SA':
+            table.add_row(f"{port}/TCP", "open", f"{response[0]}")
             noOpenPorts = False
             
-        elif responeFlag[1] == 'RA':
+        elif response[1] == 'RA':
             closedPorts += 1
             
 
