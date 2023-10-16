@@ -183,6 +183,9 @@ main()
 
 
 # TO-DO
+# Handle RST packets with IP tables
+# iptables -A OUTPUT -p tcp --tcp-flags RST RST -j DROP - to prevent RST
+# iptables -F - to reset iptables when done
 # Target overview in display(), IP, ports to scan, mac address?, etc (in progress)
 # Different scans with scapey
 
