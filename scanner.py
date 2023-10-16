@@ -35,7 +35,27 @@ class Scanner:
     
     def connect(self):
         # Implement try, except with this: https://0xbharath.github.io/art-of-packet-crafting-with-scapy/network_recon/service_discovery/index.html
-        self.ip_layer = IP(dst=self.ip)
-        self.syn_packet = TCP(dport=self.port, flags="S", seq=100)
-        self.syn_response = sr1(self.ip_layer/self.syn_packet)
+        try:
+            self.sport = random.randint(1024,65535)
 
+            self.target_ip = IP(dst=self.ip)
+
+            self.syn = TCP(dport=self.port, sport=self.sport, flags="S", seq=100)
+
+            self.syn_packet = sr1(self.target_ip/self.syn, verbose=0, timeout=1)
+
+            self.responeFlag = self.syn_packet.sprintf("%TCP.sport% %TCP.flags%")
+
+            self.responeFlag = self.responeFlag.split(" ")
+
+            if self.responeFlag[1] == "SA":
+                self.my_ack = self.syn_packet.seq + 1
+
+                self.ack_packet= TCP(dport=self.port, sport=self.sport, flags="A", seq=101, ack=self.my_ack)
+
+                send(self.target_ip/self.ack_packet, verbose=0)
+            
+
+            return self.responeFlag
+        except:
+            return None

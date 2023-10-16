@@ -1,7 +1,6 @@
 from rich import print as rprint
 from rich.table import Table
 from rich.markdown import Markdown
-
 import os
 from scapy.all import *
 import argparse
@@ -111,6 +110,41 @@ def synScan(args):
     
 
 
+def connectScan(args):
+    portQueue = QueuePorts()
+    table = Table(title=f"Connect scan results:")
+    table.add_column("Port")
+    table.add_column("Status")
+    table.add_column("Service")
+    closedPorts = 0
+    noOpenPorts = True
+    
+    discoverHosts(args)
+    
+
+    while not portQueue.isEmpty():
+        port = portQueue.dequeue()
+        scanner = Scanner(args.ip, port)
+        
+        response = scanner.connect()
+        
+        if not response:
+            table.add_row(f"{port}/TCP", "filtered", "Unknown")
+            noOpenPorts = False
+        elif response[1] == 'SA':
+            table.add_row(f"{port}/TCP", "open", f"{response[0]}")
+            noOpenPorts = False
+            
+        elif response[1] == 'RA':
+            closedPorts += 1
+            
+
+    rprint(f"Closed Ports: {closedPorts}\n")
+
+    if noOpenPorts:
+        return rprint("[bold red] All scanned ports are closed, nothing to display![/bold red]")
+    else:
+        rprint(table)
 
     
     
@@ -137,7 +171,10 @@ def Display(args):
 def main():
     args = getArgs()
     Display(args)
-    synScan(args)
+    if args.scan == "syn":
+        synScan(args)
+    elif args.scan == "connect":
+        connectScan(args)
 
         
 
