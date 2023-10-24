@@ -5,14 +5,7 @@ class Scanner:
     def __init__(self, ip, port):
         self.ip = ip
         self.port = port
-    
-    def ip(self):
-        return self.ip
-    
-    def port(self):
-        return self.port
-    
-   
+        
     def ping(self):
         self.ping_packet = IP(dst=self.ip)/ICMP()
         try:
